@@ -111,6 +111,7 @@ class _EntryPoint extends State<EntryPoint> with SingleTickerProviderStateMixin 
                   setState(() {
                     isSideMenuClosed = isSidebarClosed.value;
                     selectedMenu = menu;
+                    selectedBottomNav = bottomNavs.firstWhere((element) => element.route == menu.route);
                   });
                 },
                 selectedMenu: selectedMenu,
