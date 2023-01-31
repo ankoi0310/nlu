@@ -4,7 +4,7 @@
     <application
             android:label="NLU"
             android:name="${applicationName}"
-            android:icon="@mipmap/ic_launcher_nlu">
+            android:icon="@drawable/ic_launcher_foreground">
         <activity
                 android:name=".MainActivity"
                 android:exported="true"

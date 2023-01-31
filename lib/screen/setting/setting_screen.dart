@@ -1,4 +1,6 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:nlu/utils/notifications.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_app_bar.dart';
@@ -17,7 +19,7 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   late DKMHProvider provider;
-  bool isClickLogout = false;
+  bool isDarkMode = false;
 
   @override
   void didChangeDependencies() {
@@ -43,11 +45,129 @@ class _SettingScreenState extends State<SettingScreen> {
             SizedBox(height: getProportionateScreenHeight(20)),
             SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SettingTitle(
+                    title: "Giao diện",
+                  ),
+                  SettingTile(
+                    title: "Chế độ ban đêm",
+                    onPress: () {},
+                    child: SizedBox(
+                      height: getProportionateScreenHeight(20),
+                      child: Switch(
+                        value: isDarkMode,
+                        onChanged: (value) {
+                          setState(() {
+                            isDarkMode = value;
+                          });
+                        },
+                        activeColor: primaryColor,
+                        activeTrackColor: primaryColor.withOpacity(0.5),
+                        inactiveThumbColor: Colors.grey,
+                        inactiveTrackColor: Colors.grey.withOpacity(0.5),
+                      ),
+                    ),
+                  ),
+                  const SettingTitle(
+                    title: "Hệ thống",
+                  ),
+                  SettingTile(
+                    title: "Thông báo",
+                    onPress: () {
+                      createNotification(
+                        title: "Công nghệ phần mềm",
+                        body: "Còn 5 giây nữa học phần sẽ bắt đầu",
+                        schedule: NotificationCalendar(
+                          allowWhileIdle: true,
+                          repeats: true,
+                          hour: DateTime.now().hour,
+                          minute: DateTime.now().minute,
+                          second: DateTime.now().second + 5,
+                        ),
+                      );
+                    },
+                    child: Icon(
+                      Icons.notifications,
+                      color: Colors.blueAccent,
+                      size: getProportionateScreenWidth(20),
+                    ),
+                  ),
+                  SettingTile(
+                    title: "Thời gian hiển thị thông báo",
+                    onPress: () {
+                      showGeneralDialog(
+                        barrierDismissible: true,
+                        barrierLabel: 'Thời gian hiển thị thông báo',
+                        context: context,
+                        transitionDuration: const Duration(milliseconds: 400),
+                        transitionBuilder: (_, animation, __, child) {
+                          Tween<Offset> tween = Tween(
+                            begin: const Offset(0, -1),
+                            end: Offset.zero,
+                          );
+                          return SlideTransition(
+                            position: tween.animate(
+                              CurvedAnimation(parent: animation, curve: Curves.easeInOut),
+                            ),
+                            child: child,
+                          );
+                        },
+                        pageBuilder: (context, _, __) => Center(
+                          child: Container(
+                            height: 650,
+                            margin: const EdgeInsets.symmetric(horizontal: 16),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 32,
+                              horizontal: 16,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.94),
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                            child: DefaultTextStyle(
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                              child: ListView(
+                                children: [
+                                  const Text(
+                                    "10 giây",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    "20 giây",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    child: Icon(
+                      Icons.access_time,
+                      color: Colors.blueAccent,
+                      size: getProportionateScreenWidth(20),
+                    ),
+                  ),
+                  const SettingTitle(
+                    title: "Tài khoản",
+                  ),
                   SettingTile(
                     title: "Đăng xuất",
-                    icon: Icons.logout,
-                    color: primaryColor,
                     onPress: () {
                       showDialog(
                         context: context,
@@ -88,6 +208,11 @@ class _SettingScreenState extends State<SettingScreen> {
                         },
                       );
                     },
+                    child: Icon(
+                      Icons.logout_rounded,
+                      color: Colors.redAccent,
+                      size: getProportionateScreenWidth(20),
+                    ),
                   ),
                 ],
               ),
@@ -99,19 +224,45 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 }
 
+class SettingTitle extends StatelessWidget {
+  const SettingTitle({
+    super.key,
+    required this.title,
+  });
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(
+        left: getProportionateScreenWidth(20),
+        top: getProportionateScreenHeight(20),
+        bottom: getProportionateScreenHeight(10),
+      ),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: getProportionateScreenWidth(18),
+          fontWeight: FontWeight.w600,
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
+}
+
 class SettingTile extends StatefulWidget {
   const SettingTile({
     super.key,
     required this.title,
-    required this.icon,
-    required this.color,
     required this.onPress,
+    required this.child,
   });
 
   final String title;
-  final IconData icon;
-  final Color color;
   final VoidCallback onPress;
+  final Widget child;
 
   @override
   State<SettingTile> createState() => _SettingTileState();
@@ -166,19 +317,15 @@ class _SettingTileState extends State<SettingTile> {
           child: Row(
             children: [
               Text(
-                "Đăng xuất",
+                widget.title,
                 style: TextStyle(
-                  fontSize: getProportionateScreenWidth(18),
-                  fontWeight: FontWeight.w600,
+                  fontSize: getProportionateScreenWidth(16),
+                  fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
               ),
               const Spacer(),
-              Icon(
-                Icons.logout_rounded,
-                color: Colors.red,
-                size: getProportionateScreenWidth(20),
-              ),
+              widget.child,
             ],
           ),
         ),

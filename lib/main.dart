@@ -10,16 +10,23 @@ import 'package:provider/provider.dart';
 
 void main() {
   AwesomeNotifications().initialize(
-    'resource://drawable/res_notification_app_icon',
+    'resource://drawable/ic_launcher_foreground',
     [
       NotificationChannel(
-        channelKey: 'scheduled',
+        channelKey: 'basic_channel',
+        channelName: 'Basic notifications',
+        channelDescription: 'Notification channel for basic tests',
+        defaultColor: primaryColor,
+        importance: NotificationImportance.High,
+        channelShowBadge: true,
+      ),
+      NotificationChannel(
+        channelKey: 'scheduled_channel',
         channelName: 'Scheduled notifications',
         channelDescription: 'Scheduled notifications',
         defaultColor: primaryColor,
-        // ledColor: Colors.white,
+        locked: true,
         importance: NotificationImportance.High,
-        channelShowBadge: true,
       ),
     ],
   );

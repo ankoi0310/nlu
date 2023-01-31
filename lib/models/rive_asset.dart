@@ -1,8 +1,9 @@
+import 'package:nlu/screen/contact/contact_screen.dart';
 import 'package:nlu/screen/home/home_screen.dart';
+import 'package:nlu/screen/notification/notification_screen.dart';
 import 'package:nlu/screen/profile/profile_screen.dart';
+import 'package:nlu/screen/setting/setting_screen.dart';
 import 'package:rive/rive.dart';
-
-import '../screen/setting/setting_screen.dart';
 
 class RiveAsset {
   final String artboard, stateMachineName, title, src, route;
@@ -28,14 +29,14 @@ List<RiveAsset> bottomNavs = [
     artboard: "CHAT",
     stateMachineName: "CHAT_Interactivity",
     title: "Contact Us",
-    route: "/chat",
+    route: ContactScreen.routeName,
   ),
   RiveAsset(
     "assets/rive/icons.riv",
     artboard: "BELL",
     stateMachineName: "BELL_Interactivity",
     title: "Notification",
-    route: "/notification",
+    route: NotificationScreen.routeName,
   ),
   RiveAsset(
     "assets/rive/icons.riv",
@@ -80,14 +81,14 @@ List<RiveAsset> sideMenus = [
     artboard: "BELL",
     stateMachineName: "BELL_Interactivity",
     title: "Notification",
-    route: "/notification",
+    route: NotificationScreen.routeName,
   ),
   RiveAsset(
     "assets/rive/icons.riv",
     artboard: "CHAT",
     stateMachineName: "CHAT_Interactivity",
     title: "Contact Us",
-    route: "/chat",
+    route: ContactScreen.routeName,
   ),
 ];
 
@@ -98,12 +99,5 @@ List<RiveAsset> sideMenu2 = [
     stateMachineName: "SETTINGS_Interactivity",
     title: "Settings",
     route: SettingScreen.routeName,
-  ),
-  RiveAsset(
-    "assets/rive/icons.riv",
-    artboard: "LIKE/STAR",
-    stateMachineName: "STAR_Interactivity",
-    title: "Support Us",
-    route: "/support",
   ),
 ];

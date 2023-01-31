@@ -38,14 +38,14 @@ dependencies:
   shared_preferences: ^2.0.17
   table_calendar: ^3.0.8
   build_runner: ^2.3.3
+  flutter_svg: ^1.1.6
+  rive: ^0.10.1
+  awesome_notifications: ^0.7.4+1
+  flutter_launcher_icons: ^0.11.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  flutter_svg: ^1.1.6
   cupertino_icons: ^1.0.5
-  rive: ^0.10.1
-  awesome_notifications: ^0.7.4+1
-#  draggable_fab: ^0.1.4
 
 dev_dependencies:
   flutter_test:
@@ -101,10 +101,8 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
 
-msix_config:
-  display_name: NLU
-  publisher_display_name: Koi
-  identity_name: vn.edu.hcmuaf.fit.nlu
-  msix_version: 1.0.0.0
-  logo_path: E:\Code\FrontEnd\Flutter\Project\nlu\assets\images\logo.png
-  capabilities: internetClient, location, microphone, webcam
+flutter_icons:
+  android: true
+  image_path: "assets/images/logo.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/logo.png"

@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:nlu/components/custom_positioned.dart';
 import 'package:nlu/config/size_config.dart';
 import 'package:nlu/entry_point.dart';
+import 'package:nlu/utils/app_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../components/form_error.dart';
 import '../../constant/constants.dart';
@@ -26,13 +26,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreen extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  FocusNode _passwordFocusNode = FocusNode();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final FocusNode _passwordFocusNode = FocusNode();
   bool isShowLoading = false, isShowConfetti = false;
   late DKMHProvider dkmhProvider;
   late ChangeWidgetNotifier changeWidgetNotifier;
   late SMITrigger check, error, reset, confetti;
   final List<String> errors = [];
-  String username = '', password = '';
   bool remember = false;
 
   void addError({required String error}) {
@@ -59,9 +60,19 @@ class _LoginScreen extends State<LoginScreen> {
     Future.delayed(const Duration(seconds: 1), () {
       if (_formKey.currentState!.validate()) {
         _formKey.currentState!.save();
-        dkmhProvider.checkLogin(username, password).then((success) {
+        String username = _usernameController.text;
+        String password = _passwordController.text;
+        dkmhProvider.checkLogin(username, password).then((success) async {
           if (success) {
             check.fire();
+            await saveBoolToPrefs("remember", remember);
+            if (remember) {
+              await saveStringToPrefs("username", username);
+              await saveStringToPrefs("password", password);
+            } else {
+              await removeFromPrefs("username");
+              await removeFromPrefs("password");
+            }
             Future.delayed(const Duration(seconds: 2), () {
               setState(() {
                 isShowLoading = false;
@@ -106,144 +117,167 @@ class _LoginScreen extends State<LoginScreen> {
 
   @override
   void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
     _passwordFocusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final prefs = SharedPreferences.getInstance();
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Center(
-              child: Image.asset(
-                'assets/images/logo.png',
-                width: SizeConfig.screenWidth * 0.7,
-                height: SizeConfig.screenWidth * 0.7,
-              ),
-            ),
-            Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                child: const SizedBox(),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Mã số sinh viên",
-                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+    return FutureBuilder(
+        future: getBoolFromPrefs("remember"),
+        builder: (context, snapshot) {
+          if (snapshot.data!) {
+            remember = snapshot.data as bool;
+
+            getStringFromPrefs("username").then((value) {
+              if (_usernameController.text.isEmpty) {
+                _usernameController.text = value ?? "";
+              }
+            });
+
+            getStringFromPrefs("password").then((value) {
+              if (_passwordController.text.isEmpty) {
+                _passwordController.text = value ?? "";
+              }
+            });
+          }
+
+          return SafeArea(
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              body: Stack(
+                children: [
+                  Center(
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: SizeConfig.screenWidth * 0.7,
+                      height: SizeConfig.screenWidth * 0.7,
                     ),
-                    buildUsernameFormField(),
-                    const Text(
-                      "Mật khẩu",
-                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Positioned.fill(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                      child: const SizedBox(),
                     ),
-                    buildPasswordFormField(),
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: remember,
-                          activeColor: primaryColor,
-                          fillColor: MaterialStateProperty.resolveWith((states) => primaryColor.withOpacity(0.8)),
-                          onChanged: (value) {
-                            setState(() {
-                              remember = value!;
-                            });
-                          },
-                        ),
-                        const Text(
-                          "Ghi nhớ đăng nhập",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Mã số sinh viên",
+                            style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
                           ),
-                        ),
-                        const Spacer(),
-                      ],
-                    ),
-                    FormError(errors: errors),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 24),
-                      child: ElevatedButton(
-                        onPressed: () => login(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryColor.withOpacity(0.8),
-                          minimumSize: const Size(double.infinity, 56),
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(25),
-                              bottomRight: Radius.circular(25),
-                              bottomLeft: Radius.circular(25),
+                          buildUsernameFormField(),
+                          const Text(
+                            "Mật khẩu",
+                            style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          buildPasswordFormField(),
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: remember,
+                                activeColor: primaryColor,
+                                fillColor: MaterialStateProperty.resolveWith((states) => primaryColor.withOpacity(0.8)),
+                                onChanged: (value) {
+                                  saveBoolToPrefs("remember", value!).then(
+                                    (_) => setState(() {
+                                      remember = value;
+                                    }),
+                                  );
+                                },
+                              ),
+                              const Text(
+                                "Ghi nhớ đăng nhập",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Spacer(),
+                            ],
+                          ),
+                          FormError(errors: errors),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8, bottom: 24),
+                            child: ElevatedButton(
+                              onPressed: () => login(context),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: primaryColor.withOpacity(0.8),
+                                minimumSize: const Size(double.infinity, 56),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(25),
+                                    bottomRight: Radius.circular(25),
+                                    bottomLeft: Radius.circular(25),
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                "Đăng nhập".toUpperCase(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                        child: Text(
-                          "Đăng nhập".toUpperCase(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  isShowLoading
+                      ? CustomPositioned(
+                          child: RiveAnimation.asset(
+                            "assets/rive/check.riv",
+                            onInit: (artboard) {
+                              StateMachineController controller = RiveUtils.getRiveController(artboard);
+                              check = controller.findSMI('Check') as SMITrigger;
+                              error = controller.findSMI('Error') as SMITrigger;
+                              reset = controller.findSMI('Reset') as SMITrigger;
+                            },
+                          ),
+                        )
+                      : const SizedBox(),
+                  isShowConfetti
+                      ? CustomPositioned(
+                          child: Transform.scale(
+                            scale: 7,
+                            child: RiveAnimation.asset(
+                              "assets/rive/confetti.riv",
+                              onInit: (artboard) {
+                                StateMachineController controller = RiveUtils.getRiveController(artboard);
+                                confetti = controller.findSMI('Trigger explosion') as SMITrigger;
+                              },
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
+                ],
               ),
             ),
-            isShowLoading
-                ? CustomPositioned(
-                    child: RiveAnimation.asset(
-                      "assets/rive/check.riv",
-                      onInit: (artboard) {
-                        StateMachineController controller = RiveUtils.getRiveController(artboard);
-                        check = controller.findSMI('Check') as SMITrigger;
-                        error = controller.findSMI('Error') as SMITrigger;
-                        reset = controller.findSMI('Reset') as SMITrigger;
-                      },
-                    ),
-                  )
-                : const SizedBox(),
-            isShowConfetti
-                ? CustomPositioned(
-                    child: Transform.scale(
-                      scale: 7,
-                      child: RiveAnimation.asset(
-                        "assets/rive/confetti.riv",
-                        onInit: (artboard) {
-                          StateMachineController controller = RiveUtils.getRiveController(artboard);
-                          confetti = controller.findSMI('Trigger explosion') as SMITrigger;
-                        },
-                      ),
-                    ),
-                  )
-                : const SizedBox(),
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 
   Padding buildUsernameFormField() {
     return Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 16),
       child: TextFormField(
+        controller: _usernameController,
         onFieldSubmitted: (value) {
           _passwordFocusNode.requestFocus();
         },
-        onSaved: (newValue) => username = newValue as String,
         onChanged: (value) {
           if (value.isNotEmpty && errors.contains(kUsernameNullError)) {
             setState(() {
@@ -278,8 +312,8 @@ class _LoginScreen extends State<LoginScreen> {
     return Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 16),
       child: TextFormField(
+        controller: _passwordController,
         focusNode: _passwordFocusNode,
-        onSaved: (newValue) => password = newValue as String,
         onChanged: (value) {
           if (value.isNotEmpty && errors.contains(kPasswordNullError)) {
             setState(() {
