@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -32,10 +34,13 @@ class ContactInfo extends StatelessWidget {
           child: isLink
               ? GestureDetector(
                   onTap: () {
-                    launchUrlString(
-                      content,
-                      mode: LaunchMode.externalApplication,
-                    );
+                    if (Platform.isAndroid) {
+                      var fbUrl = "fb://facewebmodal/f?href=$content"; //for android
+                      launchUrlString(fbUrl);
+                    } else if (Platform.isIOS) {
+                      var fbUrl = "fb://profile/$content"; //for ios
+                      launchUrlString(fbUrl);
+                    }
                   },
                   child: Text(
                     content,
