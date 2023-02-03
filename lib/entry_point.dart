@@ -98,18 +98,29 @@ class _EntryPoint extends State<EntryPoint> with SingleTickerProviderStateMixin 
           },
           child: Stack(
             children: [
-              Transform(
-                alignment: Alignment.center,
-                transform: Matrix4.identity()
-                  ..setEntry(3, 2, 0.001)
-                  ..rotateY(animation.value - 30 * animation.value * pi / 180),
-                child: Transform.translate(
-                  offset: Offset(animation.value * 277, 0),
-                  child: Transform.scale(
-                    scale: scaleAnimation.value,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
-                      child: Provider.of<ChangeWidgetNotifier>(context).activeWidget,
+              GestureDetector(
+                onTap: () {
+                  if (!isSideMenuClosed) {
+                    isSidebarClosed.value = !isSidebarClosed.value;
+                    setState(() {
+                      isSideMenuClosed = isSidebarClosed.value;
+                    });
+                    _animationController.reverse();
+                  }
+                },
+                child: Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.identity()
+                    ..setEntry(3, 2, 0.001)
+                    ..rotateY(animation.value - 30 * animation.value * pi / 180),
+                  child: Transform.translate(
+                    offset: Offset(animation.value * 277, 0),
+                    child: Transform.scale(
+                      scale: scaleAnimation.value,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: Provider.of<ChangeWidgetNotifier>(context).activeWidget,
+                      ),
                     ),
                   ),
                 ),
