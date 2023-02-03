@@ -25,3 +25,15 @@ Future<void> createNotification({
     schedule: schedule,
   );
 }
+
+Future<void> cancelNotification(int id) async {
+  await AwesomeNotifications().cancel(id);
+}
+
+Future<void> cancelAllNotifications() async {
+  await AwesomeNotifications().cancelAll();
+}
+
+Future<void> cancelAllScheduledNotifications() async {
+  await AwesomeNotifications().cancelAllSchedules();
+}

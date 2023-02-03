@@ -45,7 +45,11 @@ class _OnboardingScreen extends State<OnboardingScreen> {
     dkmhProvider.checkLogin(username, password).then((success) async {
       Future.delayed(const Duration(seconds: 2), () {
         changeWidgetNotifier.changeActiveWidget(routes[HomeScreen.routeName]!);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const EntryPoint()));
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const EntryPoint()),
+          (Route<dynamic> route) => false,
+        );
       });
     });
   }
@@ -78,15 +82,16 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                 }).whenComplete(() {
                   Future.delayed(const Duration(seconds: 4), () {
                     getBoolFromPrefs("remember").then((value) {
-                      if (value!) {
+                      if (value != null && value) {
                         login(context);
                       } else {
                         isLoading.change(false);
-                        Navigator.pushReplacement(
+                        Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const LoginScreen(),
                           ),
+                          (Route<dynamic> route) => false,
                         );
                       }
                     });

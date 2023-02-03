@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nlu/config/size_config.dart';
+import 'package:nlu/utils/app_utils.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_app_bar.dart';
@@ -88,6 +91,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void didChangeDependencies() {
     provider = Provider.of<DKMHProvider>(context, listen: false);
     subjects = filterSubjects(provider.schedule!.ds_nhom_to);
+
+    saveStringToPrefs("subjects", jsonEncode(provider.schedule!.ds_nhom_to.map((e) => e.toJson()).toList()));
     super.didChangeDependencies();
   }
 

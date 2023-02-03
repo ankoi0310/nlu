@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nlu/provider/change_widget_notifier.dart';
 import 'package:nlu/provider/dkmh_provider.dart';
 import 'package:nlu/screen/home/home_screen.dart';
@@ -33,6 +34,7 @@ class _EntryPoint extends State<EntryPoint> with SingleTickerProviderStateMixin 
   DateTime current = DateTime.now();
   RiveAsset selectedBottomNav = bottomNavs.firstWhere((element) => element.route == HomeScreen.routeName);
   bool isSideMenuClosed = true;
+  DateTime? currentBackPressTime;
 
   @override
   void initState() {
@@ -75,33 +77,75 @@ class _EntryPoint extends State<EntryPoint> with SingleTickerProviderStateMixin 
         resizeToAvoidBottomInset: false,
         extendBody: true,
         backgroundColor: backgroundColor2,
-        body: Stack(
-          children: [
-            Transform(
-              alignment: Alignment.center,
-              transform: Matrix4.identity()
-                ..setEntry(3, 2, 0.001)
-                ..rotateY(animation.value - 30 * animation.value * pi / 180),
-              child: Transform.translate(
-                offset: Offset(animation.value * 277, 0),
-                child: Transform.scale(
-                  scale: scaleAnimation.value,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
-                    child: Provider.of<ChangeWidgetNotifier>(context).activeWidget,
+        body: WillPopScope(
+          onWillPop: () async {
+            final DateTime now = DateTime.now();
+            final bool back =
+                currentBackPressTime == null || now.difference(currentBackPressTime!) > const Duration(seconds: 2);
+            if (back) {
+              currentBackPressTime = now;
+              Fluttertoast.showToast(
+                msg: "Nhấn lần nữa để thoát",
+                backgroundColor: Colors.black54,
+                textColor: Colors.white,
+                fontSize: 16,
+                gravity: ToastGravity.CENTER,
+                toastLength: Toast.LENGTH_SHORT,
+              );
+              return false;
+            }
+            return true;
+          },
+          child: Stack(
+            children: [
+              Transform(
+                alignment: Alignment.center,
+                transform: Matrix4.identity()
+                  ..setEntry(3, 2, 0.001)
+                  ..rotateY(animation.value - 30 * animation.value * pi / 180),
+                child: Transform.translate(
+                  offset: Offset(animation.value * 277, 0),
+                  child: Transform.scale(
+                    scale: scaleAnimation.value,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: Provider.of<ChangeWidgetNotifier>(context).activeWidget,
+                    ),
                   ),
                 ),
               ),
-            ),
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.fastOutSlowIn,
-              width: 300,
-              left: isSideMenuClosed ? -300 : 0,
-              height: MediaQuery.of(context).size.height,
-              child: SideMenu(
-                user: dkmhProvider.user!,
-                onMenuChanged: (RiveAsset menu) {
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.fastOutSlowIn,
+                width: 300,
+                left: isSideMenuClosed ? -300 : 0,
+                height: MediaQuery.of(context).size.height,
+                child: SideMenu(
+                  user: dkmhProvider.user!,
+                  onMenuChanged: (RiveAsset menu) {
+                    isSidebarClosed.value = !isSidebarClosed.value;
+                    if (isSideMenuClosed) {
+                      _animationController.forward();
+                    } else {
+                      _animationController.reverse();
+                    }
+                    setState(() {
+                      isSideMenuClosed = isSidebarClosed.value;
+                      selectedMenu = menu;
+                      selectedBottomNav = bottomNavs.firstWhere((element) => element.route == menu.route);
+                    });
+                  },
+                  selectedMenu: selectedMenu,
+                ),
+              ),
+              MenuButton(
+                riveOnInit: (artboard) {
+                  StateMachineController controller =
+                      RiveUtils.getRiveController(artboard, stateMachineName: "State Machine");
+                  isSidebarClosed = controller.findSMI("isOpen") as SMIBool;
+                  isSidebarClosed.value = true;
+                },
+                press: () {
                   isSidebarClosed.value = !isSidebarClosed.value;
                   if (isSideMenuClosed) {
                     _animationController.forward();
@@ -110,33 +154,11 @@ class _EntryPoint extends State<EntryPoint> with SingleTickerProviderStateMixin 
                   }
                   setState(() {
                     isSideMenuClosed = isSidebarClosed.value;
-                    selectedMenu = menu;
-                    selectedBottomNav = bottomNavs.firstWhere((element) => element.route == menu.route);
                   });
                 },
-                selectedMenu: selectedMenu,
               ),
-            ),
-            MenuButton(
-              riveOnInit: (artboard) {
-                StateMachineController controller =
-                    RiveUtils.getRiveController(artboard, stateMachineName: "State Machine");
-                isSidebarClosed = controller.findSMI("isOpen") as SMIBool;
-                isSidebarClosed.value = true;
-              },
-              press: () {
-                isSidebarClosed.value = !isSidebarClosed.value;
-                if (isSideMenuClosed) {
-                  _animationController.forward();
-                } else {
-                  _animationController.reverse();
-                }
-                setState(() {
-                  isSideMenuClosed = isSidebarClosed.value;
-                });
-              },
-            ),
-          ],
+            ],
+          ),
         ),
         bottomNavigationBar: Transform.translate(
           offset: Offset(0, 100 * animation.value),

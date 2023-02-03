@@ -1,6 +1,7 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:nlu/utils/notifications.dart';
+import 'package:nlu/components/setting_tile.dart';
+import 'package:nlu/screen/setting/components/setting_title.dart';
+import 'package:nlu/screen/setting/notification_setting/notification_setting_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_app_bar.dart';
@@ -47,113 +48,49 @@ class _SettingScreenState extends State<SettingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SettingTitle(
-                    title: "Giao diện",
-                  ),
+                  const SettingTitle(title: "Giao diện"),
                   SettingTile(
+                    enabled: false,
                     title: "Chế độ ban đêm",
                     onPress: () {},
                     child: SizedBox(
                       height: getProportionateScreenHeight(20),
                       child: Switch(
                         value: isDarkMode,
+                        mouseCursor: MouseCursor.defer,
+                        activeColor: primaryColor,
+                        activeTrackColor: primaryColor.withOpacity(0.5),
+                        inactiveThumbColor: Colors.grey,
+                        inactiveTrackColor: Colors.grey.withOpacity(0.5),
                         onChanged: (value) {
                           setState(() {
                             isDarkMode = value;
                           });
                         },
-                        activeColor: primaryColor,
-                        activeTrackColor: primaryColor.withOpacity(0.5),
-                        inactiveThumbColor: Colors.grey,
-                        inactiveTrackColor: Colors.grey.withOpacity(0.5),
                       ),
                     ),
                   ),
-                  const SettingTitle(
-                    title: "Hệ thống",
-                  ),
+                  const SettingTitle(title: "Hệ thống"),
                   SettingTile(
-                    title: "Thông báo",
+                    enabled: true,
+                    title: "Thông báo học phần",
                     onPress: () {
-                      createNotification(
-                        title: "Công nghệ phần mềm",
-                        body: "Còn 5 giây nữa học phần sẽ bắt đầu",
-                        schedule: NotificationCalendar(
-                          allowWhileIdle: true,
-                          repeats: true,
-                          hour: DateTime.now().hour,
-                          minute: DateTime.now().minute,
-                          second: DateTime.now().second + 5,
-                        ),
-                      );
-                    },
-                    child: Icon(
-                      Icons.notifications,
-                      color: Colors.blueAccent,
-                      size: getProportionateScreenWidth(20),
-                    ),
-                  ),
-                  SettingTile(
-                    title: "Thời gian hiển thị thông báo",
-                    onPress: () {
-                      showGeneralDialog(
-                        barrierDismissible: true,
-                        barrierLabel: 'Thời gian hiển thị thông báo',
-                        context: context,
-                        transitionDuration: const Duration(milliseconds: 400),
-                        transitionBuilder: (_, animation, __, child) {
-                          Tween<Offset> tween = Tween(
-                            begin: const Offset(0, -1),
-                            end: Offset.zero,
-                          );
-                          return SlideTransition(
-                            position: tween.animate(
-                              CurvedAnimation(parent: animation, curve: Curves.easeInOut),
-                            ),
-                            child: child,
-                          );
-                        },
-                        pageBuilder: (context, _, __) => Center(
-                          child: Container(
-                            height: 650,
-                            margin: const EdgeInsets.symmetric(horizontal: 16),
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 32,
-                              horizontal: 16,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.94),
-                              borderRadius: BorderRadius.circular(40),
-                            ),
-                            child: DefaultTextStyle(
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                              child: ListView(
-                                children: [
-                                  const Text(
-                                    "10 giây",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  const Text(
-                                    "20 giây",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation, secondaryAnimation) => const NotificationSettingScreen(),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            var begin = const Offset(1, 0);
+                            var end = Offset.zero;
+                            var curve = Curves.ease;
+
+                            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
+                          },
                         ),
                       );
                     },
@@ -163,10 +100,9 @@ class _SettingScreenState extends State<SettingScreen> {
                       size: getProportionateScreenWidth(20),
                     ),
                   ),
-                  const SettingTitle(
-                    title: "Tài khoản",
-                  ),
+                  const SettingTitle(title: "Tài khoản"),
                   SettingTile(
+                    enabled: true,
                     title: "Đăng xuất",
                     onPress: () {
                       showDialog(
@@ -218,116 +154,6 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class SettingTitle extends StatelessWidget {
-  const SettingTitle({
-    super.key,
-    required this.title,
-  });
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-        left: getProportionateScreenWidth(20),
-        top: getProportionateScreenHeight(20),
-        bottom: getProportionateScreenHeight(10),
-      ),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: getProportionateScreenWidth(18),
-          fontWeight: FontWeight.w600,
-          color: Colors.black,
-        ),
-      ),
-    );
-  }
-}
-
-class SettingTile extends StatefulWidget {
-  const SettingTile({
-    super.key,
-    required this.title,
-    required this.onPress,
-    required this.child,
-  });
-
-  final String title;
-  final VoidCallback onPress;
-  final Widget child;
-
-  @override
-  State<SettingTile> createState() => _SettingTileState();
-}
-
-class _SettingTileState extends State<SettingTile> {
-  bool isClick = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: getProportionateScreenWidth(20),
-      ),
-      child: GestureDetector(
-        onTap: widget.onPress,
-        onTapCancel: () {
-          setState(() {
-            isClick = false;
-          });
-        },
-        onTapDown: (details) {
-          setState(() {
-            isClick = true;
-          });
-        },
-        onTapUp: (details) {
-          setState(() {
-            isClick = false;
-          });
-        },
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            vertical: getProportionateScreenHeight(15),
-            horizontal: getProportionateScreenWidth(20),
-          ),
-          margin: EdgeInsets.only(
-            bottom: getProportionateScreenHeight(10),
-          ),
-          decoration: BoxDecoration(
-            color: isClick ? primaryColor.withOpacity(0.5) : Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 1,
-                blurRadius: 7,
-                offset: const Offset(0, 3), // changes position of shadow
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Text(
-                widget.title,
-                style: TextStyle(
-                  fontSize: getProportionateScreenWidth(16),
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                ),
-              ),
-              const Spacer(),
-              widget.child,
-            ],
-          ),
         ),
       ),
     );

@@ -100,4 +100,38 @@ class Subject {
       gc_to_hoc: json['gc_to_hoc'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'id_to_hoc': id_to_hoc,
+        'id_mon': id_mon,
+        'ma_mon': ma_mon,
+        'ten_mon': ten_mon,
+        'so_tc': so_tc,
+        'so_tc_so': so_tc_so,
+        'is_vuot': is_vuot,
+        'nhom_to': nhom_to,
+        'lop': lop,
+        'ds_lop': List<dynamic>.from(ds_lop.map((x) => x)),
+        'is_kdk': is_kdk,
+        'sl_dk': sl_dk,
+        'sl_cp': sl_cp,
+        'sl_cl': sl_cl,
+        'tkb': tkb,
+        'is_hl': is_hl,
+        'enable': enable,
+        'hauk': hauk,
+        'is_dk': is_dk,
+        'is_rot': is_rot,
+        'is_ctdt': is_ctdt,
+        'is_chctdt': is_chctdt,
+        'is_kg_lt': is_kg_lt,
+        'thu': thu,
+        'tbd': tbd,
+        'so_tiet': so_tiet,
+        'tu_gio': tu_gio,
+        'den_gio': den_gio,
+        'phong': phong,
+        'gv': gv,
+        'gc_to_hoc': gc_to_hoc,
+      };
 }

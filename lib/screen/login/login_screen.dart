@@ -84,16 +84,20 @@ class _LoginScreen extends State<LoginScreen> {
                   isShowConfetti = false;
                 });
                 changeWidgetNotifier.changeActiveWidget(routes[HomeScreen.routeName]!);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const EntryPoint()));
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EntryPoint()),
+                  (Route<dynamic> route) => false,
+                );
               });
             });
           } else {
             error.fire();
             Future.delayed(const Duration(seconds: 2), () {
+              addError(error: kInvalidLogin);
               setState(() {
                 isShowLoading = false;
               });
-              addError(error: kInvalidLogin);
             });
           }
         });
@@ -128,7 +132,7 @@ class _LoginScreen extends State<LoginScreen> {
     return FutureBuilder(
         future: getBoolFromPrefs("remember"),
         builder: (context, snapshot) {
-          if (snapshot.data!) {
+          if (snapshot.hasData && snapshot.data != null) {
             remember = snapshot.data as bool;
 
             getStringFromPrefs("username").then((value) {
@@ -170,6 +174,8 @@ class _LoginScreen extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          FormError(errors: errors),
+                          SizedBox(height: getProportionateScreenHeight(10)),
                           const Text(
                             "Mã số sinh viên",
                             style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
@@ -202,10 +208,8 @@ class _LoginScreen extends State<LoginScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const Spacer(),
                             ],
                           ),
-                          FormError(errors: errors),
                           Padding(
                             padding: const EdgeInsets.only(top: 8, bottom: 24),
                             child: ElevatedButton(
