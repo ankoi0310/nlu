@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:nlu/constant/api.dart';
-
-import '../domain/schedule.dart';
-import '../domain/user.dart';
+import 'package:nlu/domain/post.dart';
+import 'package:nlu/domain/schedule.dart';
+import 'package:nlu/domain/user.dart';
 
 class DKMHProvider with ChangeNotifier {
   late String accessToken;
@@ -13,6 +13,7 @@ class DKMHProvider with ChangeNotifier {
   late String errorMessage;
   late User? _user;
   late Schedule? _schedule;
+  late List<Post> _posts = [];
 
   String get error => errorMessage;
 
@@ -21,6 +22,8 @@ class DKMHProvider with ChangeNotifier {
   User? get user => _user;
 
   Schedule? get schedule => _schedule;
+
+  List<Post> get posts => _posts;
 
   Future<bool> checkLogin(username, password) async {
     try {
@@ -100,6 +103,53 @@ class DKMHProvider with ChangeNotifier {
         _schedule = Schedule.fromJson(json.decode(utf8.decode(response.bodyBytes))['data']);
       } else {
         throw Exception('Failed to get schedule');
+      }
+    } catch (_) {}
+  }
+
+  Future<void> fetchPosts({
+    String kyHieu = 'tb',
+    int soLuongHinhDaiDien = 1,
+    int limit = 10,
+  }) async {
+    try {
+      Response response = await post(
+        Uri.parse(apiFetchPost),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          "filter": {
+            "ky_hieu": kyHieu,
+            "is_hien_thi": true,
+            "is_hinh_dai_dien": true,
+            "so_luong_hinh_dai_dien": soLuongHinhDaiDien,
+          },
+          "additional": {
+            "paging": {
+              "limit": limit,
+              "page": 1,
+            },
+            "ordering": [
+              {
+                "name": "do_uu_tien",
+                "order_type": 1,
+              },
+              {
+                "name": "ngay_dang_tin",
+                "order_type": 1,
+              }
+            ]
+          }
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        _posts = (json.decode(utf8.decode(response.bodyBytes))['data']['ds_bai_viet'] as List)
+            .map((e) => Post.fromJson(e))
+            .toList();
+      } else {
+        throw Exception('Failed to get posts');
       }
     } catch (_) {}
   }

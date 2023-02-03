@@ -4,6 +4,14 @@ int createUniqueId() {
   return DateTime.now().millisecondsSinceEpoch.remainder(100);
 }
 
+String createPostUri(
+    {String baseUrl = 'https://dkmh.hcmuaf.edu.vn/#/home/listbaiviet',
+    String kyKieu = 'tb',
+    int page = 1,
+    required String id}) {
+  return '$baseUrl/$kyKieu/page/$page/baivietct/$id';
+}
+
 Future<void> saveStringToPrefs(String key, String value) async {
   final prefs = await SharedPreferences.getInstance();
   prefs.setString(key, value);

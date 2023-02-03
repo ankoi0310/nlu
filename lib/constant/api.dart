@@ -4,3 +4,4 @@ const String apiDKMH = "";
 const String apiUserInfo = "https://dkmh.hcmuaf.edu.vn/api/dkmh/w-locsinhvieninfo";
 const String apiFetchSemesterData = "https://dkmh.hcmuaf.edu.vn/api/dkmh/w-locdsnhomto";
 const String apiSchedule = "https://dkmh.hcmuaf.edu.vn/api/sch/w-locdstkbhockytheodoituong";
+const String apiFetchPost = "https://dkmh.hcmuaf.edu.vn/api/web/w-locdsbaiviet";
