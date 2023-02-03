@@ -3,14 +3,15 @@ import 'dart:convert';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nlu/components/custom_app_bar.dart';
 import 'package:nlu/config/size_config.dart';
+import 'package:nlu/constant/constants.dart';
+import 'package:nlu/constant/timeline.dart';
+import 'package:nlu/domain/subject.dart';
+import 'package:nlu/provider/dkmh_provider.dart';
 import 'package:nlu/utils/app_utils.dart';
 import 'package:provider/provider.dart';
 
-import '../../components/custom_app_bar.dart';
-import '../../constant/constants.dart';
-import '../../domain/subject.dart';
-import '../../provider/dkmh_provider.dart';
 import 'components/calendar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -131,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     subjects.length,
                     (index) => Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      child: SecondaryCourseCard(
+                      child: CourseCard(
                         subject: subjects[index],
                         color: courseColors[index],
                       ),
@@ -147,8 +148,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class SecondaryCourseCard extends StatelessWidget {
-  const SecondaryCourseCard({
+class CourseCard extends StatelessWidget {
+  const CourseCard({
     super.key,
     required this.subject,
     required this.color,
@@ -181,7 +182,11 @@ class SecondaryCourseCard extends StatelessWidget {
                 SizedBox(height: getProportionateScreenHeight(10)),
                 Text(
                   subject.gv,
-                  style: const TextStyle(color: Colors.white60, fontSize: 16),
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 )
               ],
             ),
@@ -202,7 +207,14 @@ class SecondaryCourseCard extends StatelessWidget {
                     Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
               ),
               SizedBox(height: getProportionateScreenHeight(10)),
-              Text(subject.den_gio, style: const TextStyle(color: Colors.white60, fontSize: 16))
+              Text(
+                timeline[subject.tbd]!.format(context),
+                style: const TextStyle(
+                  color: Colors.white60,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              )
             ],
           )
         ],
