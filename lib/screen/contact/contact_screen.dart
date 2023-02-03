@@ -33,34 +33,72 @@ class _ContactScreenState extends State<ContactScreen> {
               margin: EdgeInsets.symmetric(
                 horizontal: getProportionateScreenWidth(20),
               ),
-              child: Column(
-                children: [
-                  Text(
-                    "Mọi thắc mắc, góp ý vui lòng liên hệ với chúng tôi qua các thông tin sau:",
-                    style: TextStyle(
-                      fontSize: getProportionateScreenWidth(16),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text(
+                      "Mọi thắc mắc, góp ý vui lòng liên hệ với mình qua các thông tin sau:",
+                      style: TextStyle(
+                        fontSize: getProportionateScreenWidth(16),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: getProportionateScreenHeight(20)),
-                  const ContactInfo(
-                    content: phone,
-                    icon: Icons.phone,
-                    isLink: false,
-                  ),
-                  SizedBox(height: getProportionateScreenHeight(20)),
-                  const ContactInfo(
-                    content: email,
-                    icon: Icons.email,
-                    isLink: false,
-                  ),
-                  SizedBox(height: getProportionateScreenHeight(20)),
-                  const ContactInfo(
-                    content: facebook,
-                    icon: Icons.facebook,
-                    isLink: true,
-                  ),
-                  SizedBox(height: getProportionateScreenHeight(20)),
-                ],
+                    SizedBox(height: getProportionateScreenHeight(20)),
+                    const ContactInfo(
+                      content: phone,
+                      icon: Icons.phone,
+                      isLink: false,
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(20)),
+                    const ContactInfo(
+                      content: email,
+                      icon: Icons.email,
+                      isLink: false,
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(20)),
+                    const ContactInfo(
+                      content: facebook,
+                      icon: Icons.facebook,
+                      isLink: true,
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(50)),
+                    Text(
+                      "Nếu thấy hữu ích, bạn có thể ủng hộ mình qua các thông tin sau (nhấn vào để copy):",
+                      style: TextStyle(
+                        fontSize: getProportionateScreenWidth(16),
+                        color: Colors.red,
+                      ),
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(20)),
+                    const ContactInfo(
+                      content: "VPBank - 42633102001 - HUYNH VAN HUU AN",
+                      icon: Icons.credit_card,
+                      isLink: false,
+                      isCouldCopy: true,
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(20)),
+                    const ContactInfo(
+                      content: "BIDV - 31410003494070 - HUYNH VAN HUU AN",
+                      icon: Icons.credit_card,
+                      isLink: false,
+                      isCouldCopy: true,
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(20)),
+                    const ContactInfo(
+                      content: "Momo - $phone",
+                      icon: Icons.phone_android,
+                      isLink: false,
+                      isCouldCopy: true,
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(40)),
+                    Text(
+                      "Cảm ơn bạn đã ủng hộ!",
+                      style: TextStyle(
+                        fontSize: getProportionateScreenWidth(16),
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
