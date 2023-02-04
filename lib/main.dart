@@ -50,7 +50,10 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'NLU',
-        theme: theme,
+        debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.system,
+        theme: lightTheme,
+        darkTheme: darkTheme,
         home: const OnboardingScreen(),
       ),
     );

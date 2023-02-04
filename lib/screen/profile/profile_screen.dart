@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nlu/provider/dkmh_provider.dart';
+import 'package:nlu/screen/profile/components/info_tile.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_app_bar.dart';
@@ -71,11 +72,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Container(
                                   padding: EdgeInsets.symmetric(vertical: getProportionateScreenWidth(15)),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: Theme.of(context).cardColor,
                                     borderRadius: BorderRadius.circular(10),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
+                                        color: Theme.of(context).shadowColor.withOpacity(0.2),
                                         spreadRadius: 5,
                                         blurRadius: 7,
                                         offset: const Offset(0, 3), // changes position of shadow
@@ -149,11 +150,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Container(
                                   padding: EdgeInsets.symmetric(vertical: getProportionateScreenWidth(15)),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: Theme.of(context).cardColor,
                                     borderRadius: BorderRadius.circular(10),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
+                                        color: Theme.of(context).shadowColor.withOpacity(0.2),
                                         spreadRadius: 5,
                                         blurRadius: 7,
                                         offset: const Offset(0, 3), // changes position of shadow
@@ -204,54 +205,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class InfoTile extends StatelessWidget {
-  const InfoTile({
-    super.key,
-    required this.title,
-    required this.value,
-  });
-
-  final String title, value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-        left: getProportionateScreenWidth(20),
-        right: getProportionateScreenWidth(20),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SizedBox(
-            width: SizeConfig.screenWidth * 0.27,
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: getProportionateScreenWidth(14),
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
-              ),
-            ),
-          ),
-          SizedBox(
-            width: SizeConfig.screenWidth * 0.5,
-            child: Text(
-              value,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                fontSize: getProportionateScreenWidth(14),
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

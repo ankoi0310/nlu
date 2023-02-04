@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nlu/config/size_config.dart';
 import 'package:rive/rive.dart';
 
 class MenuButton extends StatelessWidget {
@@ -17,7 +18,10 @@ class MenuButton extends StatelessWidget {
       child: GestureDetector(
         onTap: press,
         child: Container(
-          margin: const EdgeInsets.only(left: 16, top: 20),
+          margin: EdgeInsets.only(
+            left: getProportionateScreenWidth(15),
+            top: getProportionateScreenWidth(15),
+          ),
           height: 40,
           width: 40,
           decoration: const BoxDecoration(

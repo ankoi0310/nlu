@@ -55,11 +55,11 @@ class _SettingTileState extends State<SettingTile> {
             bottom: getProportionateScreenHeight(10),
           ),
           decoration: BoxDecoration(
-            color: isClick && widget.enabled ? primaryColor.withOpacity(0.5) : Colors.white,
+            color: isClick && widget.enabled ? primaryColor.withOpacity(0.5) : Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
+                color: Theme.of(context).shadowColor.withOpacity(0.2),
                 spreadRadius: 1,
                 blurRadius: 7,
                 offset: const Offset(0, 3), // changes position of shadow
@@ -73,7 +73,6 @@ class _SettingTileState extends State<SettingTile> {
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(16),
                   fontWeight: FontWeight.w500,
-                  color: Colors.black,
                 ),
               ),
               const Spacer(),

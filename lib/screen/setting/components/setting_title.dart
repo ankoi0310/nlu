@@ -22,7 +22,6 @@ class SettingTitle extends StatelessWidget {
         style: TextStyle(
           fontSize: getProportionateScreenWidth(18),
           fontWeight: FontWeight.w600,
-          color: Colors.black,
         ),
       ),
     );

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:nlu/components/custom_app_bar.dart';
 import 'package:nlu/components/setting_tile.dart';
+import 'package:nlu/config/size_config.dart';
+import 'package:nlu/provider/dkmh_provider.dart';
+import 'package:nlu/screen/login/login_screen.dart';
 import 'package:nlu/screen/setting/components/setting_title.dart';
 import 'package:nlu/screen/setting/notification_setting/notification_setting_screen.dart';
 import 'package:provider/provider.dart';
-
-import '../../components/custom_app_bar.dart';
-import '../../config/size_config.dart';
-import '../../constant/constants.dart';
-import '../../provider/dkmh_provider.dart';
-import '../login/login_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   static String routeName = "/setting";
@@ -20,10 +18,16 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   late DKMHProvider provider;
-  bool isDarkMode = false;
+  late bool isDarkMode;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
+    isDarkMode = Theme.of(context).brightness == Brightness.dark;
     provider = Provider.of<DKMHProvider>(context, listen: false);
     super.didChangeDependencies();
   }
@@ -48,29 +52,7 @@ class _SettingScreenState extends State<SettingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SettingTitle(title: "Giao diện"),
-                  SettingTile(
-                    enabled: false,
-                    title: "Chế độ ban đêm",
-                    onPress: () {},
-                    child: SizedBox(
-                      height: getProportionateScreenHeight(20),
-                      child: Switch(
-                        value: isDarkMode,
-                        mouseCursor: MouseCursor.defer,
-                        activeColor: primaryColor,
-                        activeTrackColor: primaryColor.withOpacity(0.5),
-                        inactiveThumbColor: Colors.grey,
-                        inactiveTrackColor: Colors.grey.withOpacity(0.5),
-                        onChanged: (value) {
-                          setState(() {
-                            isDarkMode = value;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  const SettingTitle(title: "Hệ thống"),
+                  const SettingTitle(title: "Thông báo"),
                   SettingTile(
                     enabled: true,
                     title: "Thông báo học phần",
