@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:nlu/config/size_config.dart';
 import 'package:nlu/constant/constants.dart';
+import 'package:nlu/domain/subject.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class Calendar extends StatefulWidget {
-  const Calendar({Key? key, required this.current, required this.onDaySelected}) : super(key: key);
+  const Calendar({
+    Key? key,
+    required this.current,
+    required this.onDaySelected,
+    required this.subjects,
+  }) : super(key: key);
 
   final DateTime current;
   final Function onDaySelected;
+  final List<Subject> subjects;
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -35,8 +44,47 @@ class _CalendarState extends State<Calendar> {
         todayTextStyle: todayTextStyle,
         selectedTextStyle: selectedTextStyle(context: context),
         weekendTextStyle: weekendTextStyle,
-        // holidayTextStyle: holidayTextStyle,
-        // todayTextStyle: selectedTextStyle,
+        markersAlignment: Alignment.bottomRight,
+      ),
+      calendarBuilders: CalendarBuilders(
+        markerBuilder: (context, date, events) {
+          int amount = widget.subjects.where((subject) {
+            List<String> dates = subject.tkb.split(" đến ");
+            final start = DateFormat("dd/MM/yy").parse(dates[0], true);
+            final end = DateFormat("dd/MM/yy").parse(dates[1], true);
+            bool isValid = (date.isAfter(start) && date.isBefore(end)) ||
+                date.isAtSameMomentAs(start) ||
+                date.isAtSameMomentAs(end);
+            return subject.thu == date.weekday + 1 && isValid;
+          }).length;
+          return amount > 0
+              ? Container(
+                  margin: EdgeInsets.only(
+                    right: getProportionateScreenWidth(5),
+                    bottom: getProportionateScreenWidth(5),
+                  ),
+                  width: getProportionateScreenWidth(14),
+                  height: getProportionateScreenWidth(14),
+                  decoration: BoxDecoration(
+                    color: primaryColor.withOpacity(0.8),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        amount.toString(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : const SizedBox();
+        },
       ),
       headerStyle: const HeaderStyle(
         formatButtonVisible: false,

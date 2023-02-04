@@ -117,6 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   subjects = filterSubjects(provider.schedule!.ds_nhom_to);
                 });
               },
+              subjects: provider.schedule!.ds_nhom_to,
             ),
             const Divider(
               thickness: 2,
