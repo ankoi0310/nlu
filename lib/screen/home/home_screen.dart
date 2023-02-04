@@ -37,9 +37,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<Subject> filterSubjects(List<Subject> subjects) {
-    return subjects
+    subjects = subjects
         .where((subject) => subject.thu == current.weekday + 1 && checkValidDate(current, subject.tkb))
         .toList();
+    subjects.sort((a, b) => a.tbd.compareTo(b.tbd));
+    return subjects;
   }
 
   @override
