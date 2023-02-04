@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nlu/components/custom_child_app_bar.dart';
 import 'package:nlu/config/size_config.dart';
@@ -43,13 +44,11 @@ class _TimelineScreenState extends State<TimelineScreen> {
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black,
                     ),
                   ),
                   value: key,
                   controlAffinity: ListTileControlAffinity.trailing,
                   groupValue: selectedTime,
-                  activeColor: Colors.blueAccent,
                   selected: selectedTime == key,
                   onChanged: (value) {
                     saveIntToPrefs("time_before", value as int);
@@ -59,11 +58,13 @@ class _TimelineScreenState extends State<TimelineScreen> {
 
                     if (selectedTime == 0) {
                       cancelAllScheduledNotifications();
-                      print("Cancel all notifications");
+                      if (kDebugMode) {
+                        print("Cancel all notifications");
+                      }
                     } else {
                       getStringFromPrefs("subjects").then((value) async {
+                        cancelAllScheduledNotifications();
                         List<Subject> subjects = jsonDecode(value!).map<Subject>((e) => Subject.fromJson(e)).toList();
-
                         for (var subject in subjects) {
                           int thu = subject.thu; // Thứ
                           TimeOfDay studyTime = timeline[subject.tbd]!; // Thời gian bắt đầu
@@ -74,12 +75,35 @@ class _TimelineScreenState extends State<TimelineScreen> {
                             body: "Còn ${timeBefore[selectedTime]} nữa sẽ bắt đầu ${subject.ten_mon}",
                             schedule: NotificationCalendar(
                               allowWhileIdle: true,
-                              repeats: true,
                               weekday: thu - 1,
                               hour: notiTime.hour,
                               minute: notiTime.minute,
                             ),
                           );
+
+                          if (kDebugMode) {
+                            print(
+                                "Create notification for ${subject.ten_mon} at ${notiTime.hour}:${notiTime.minute} on $thu");
+                          }
+                        }
+
+                        // Test
+                        // subjects.add(subjects[0]);
+                        // Subject subject = subjects.last;
+                        // await createNotification(
+                        //   title: "Thông báo",
+                        //   body: "Còn ${timeBefore[selectedTime]} nữa sẽ bắt đầu ${subject.ten_mon}",
+                        //   schedule: NotificationCalendar(
+                        //     allowWhileIdle: true,
+                        //     weekday: 6,
+                        //     hour: DateTime.now().hour,
+                        //     minute: DateTime.now().minute + 1,
+                        //   ),
+                        // );
+
+                        if (kDebugMode) {
+                          List<NotificationModel> list = await getAllScheduleNotifications();
+                          print("All notifications: ${list.length}");
                         }
                       });
                     }

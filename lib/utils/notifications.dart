@@ -26,6 +26,11 @@ Future<void> createNotification({
   );
 }
 
+// get all notifications
+Future<List<NotificationModel>> getAllScheduleNotifications() async {
+  return await AwesomeNotifications().listScheduledNotifications();
+}
+
 Future<void> cancelNotification(int id) async {
   await AwesomeNotifications().cancel(id);
 }

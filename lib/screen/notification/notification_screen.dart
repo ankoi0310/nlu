@@ -28,13 +28,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   void didChangeDependencies() {
     provider = Provider.of<DKMHProvider>(context, listen: false);
-    // if (isInit) {
-    //   provider.fetchPosts().then((_) {
-    //     setState(() {
-    //       isInit = false;
-    //     });
-    //   });
-    // }
     super.didChangeDependencies();
   }
 
@@ -86,13 +79,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       vertical: getProportionateScreenHeight(20),
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
                                       borderRadius: BorderRadius.circular(10),
+                                      color: Theme.of(context).cardColor,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          spreadRadius: 1,
-                                          blurRadius: 7,
+                                          color: Theme.of(context).shadowColor.withOpacity(0.2),
+                                          spreadRadius: 2,
+                                          blurRadius: 2,
                                           offset: const Offset(0, 3), // changes position of shadow
                                         ),
                                       ],

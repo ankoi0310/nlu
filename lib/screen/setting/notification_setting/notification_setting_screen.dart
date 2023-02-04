@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nlu/components/custom_child_app_bar.dart';
 import 'package:nlu/components/setting_tile.dart';
 import 'package:nlu/config/size_config.dart';
@@ -19,14 +20,14 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
     return FutureBuilder(
         future: getIntFromPrefs("time_before"),
         builder: (context, snapshot) {
-          final selectedTime = snapshot.hasData ? snapshot.data as int : 5;
+          final selectedTime = snapshot.hasData ? snapshot.data as int : 0;
           final selectedTimeLabel = timeBefore[selectedTime]!;
 
           return SafeArea(
             child: Scaffold(
               appBar: buildAppBar(
                 context: context,
-                title: "Thông báo",
+                title: "Thông báo học phần",
               ),
               body: Container(
                 margin: const EdgeInsets.only(top: 20),
@@ -68,7 +69,17 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                           color: Colors.black,
                         ),
                       ),
-                      onPress: () {},
+                      onPress: () {
+                        Fluttertoast.showToast(
+                          msg: "Chức năng đang được phát triển",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.grey,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      },
                     )
                   ],
                 ),

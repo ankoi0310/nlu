@@ -9,12 +9,10 @@ const Map<int, TimeOfDay> timeline = {
 };
 
 const Map<int, String> timeBefore = {
-  5: "5 phút",
-  10: "10 phút",
-  15: "15 phút",
-  30: "30 phút",
-  45: "45 phút",
-  60: "1 giờ",
+  15: "Trước 15 phút",
+  30: "Trước 30 phút",
+  45: "Trước 45 phút",
+  60: "Trước 1 giờ",
   0: "Không thông báo",
 };
 
