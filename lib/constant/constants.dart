@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import '../config/size_config.dart';
 
 const Color primaryColor = Color(0xF335BB48);
+// secondary color is lighter than primary color
+const Color secondaryColor = Color(0x7B35BB48);
 const Color backgroundColor2 = Color(0xFF17203A);
 const Color backgroundColorLight = Color(0xFFF2F6FF);
-const Color backgroundColorDark = Color(0xFF25254B);
+const Color backgroundColorDark = Color(0xFF0A0E21);
 const Color shadowColorLight = Color(0xFF4A5367);
 const Color shadowColorDark = Colors.black;
 
@@ -18,25 +20,35 @@ const courseColors = [
 ];
 
 // Calendar text style
-final defaultTextStyle = TextStyle(
-  fontSize: getProportionateScreenWidth(16),
-  fontWeight: FontWeight.bold,
-  color: Colors.black,
-  height: 1.5,
-);
+TextStyle defaultTextStyle({required BuildContext context}) {
+  return TextStyle(
+    fontSize: getProportionateScreenWidth(16),
+    fontWeight: FontWeight.bold,
+    color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+    height: 1.5,
+  );
+}
 
-final selectedTextStyle = TextStyle(
+final todayTextStyle = TextStyle(
   fontSize: getProportionateScreenWidth(16),
   fontWeight: FontWeight.bold,
   color: Colors.white,
   height: 1.5,
 );
 
+TextStyle selectedTextStyle({required BuildContext context}) {
+  return TextStyle(
+    fontSize: getProportionateScreenWidth(16),
+    fontWeight: FontWeight.bold,
+    color: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black,
+    height: 1.5,
+  );
+}
+
 final weekendTextStyle = TextStyle(
   fontSize: getProportionateScreenWidth(16),
   fontWeight: FontWeight.bold,
   color: Colors.red,
-  height: 1.5,
 );
 
 final holidayTextStyle = TextStyle(

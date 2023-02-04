@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nlu/constant/constants.dart';
 import 'package:table_calendar/table_calendar.dart';
-
-import '../../../constant/constants.dart';
 
 class Calendar extends StatefulWidget {
   const Calendar({Key? key, required this.current, required this.onDaySelected}) : super(key: key);
@@ -24,18 +23,25 @@ class _CalendarState extends State<Calendar> {
       startingDayOfWeek: StartingDayOfWeek.monday,
       availableCalendarFormats: const {CalendarFormat.month: 'Month'},
       calendarStyle: CalendarStyle(
-        outsideDaysVisible: false,
-        defaultTextStyle: defaultTextStyle,
-        selectedTextStyle: selectedTextStyle,
+        todayDecoration: const BoxDecoration(
+          color: secondaryColor,
+          shape: BoxShape.circle,
+        ),
+        selectedDecoration: const BoxDecoration(
+          color: primaryColor,
+          shape: BoxShape.circle,
+        ),
+        defaultTextStyle: defaultTextStyle(context: context),
+        todayTextStyle: todayTextStyle,
+        selectedTextStyle: selectedTextStyle(context: context),
         weekendTextStyle: weekendTextStyle,
-        holidayTextStyle: holidayTextStyle,
-        todayTextStyle: selectedTextStyle,
+        // holidayTextStyle: holidayTextStyle,
+        // todayTextStyle: selectedTextStyle,
       ),
       headerStyle: const HeaderStyle(
         formatButtonVisible: false,
         titleCentered: true,
         titleTextStyle: TextStyle(
-          color: Colors.black,
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),

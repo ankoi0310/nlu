@@ -7,7 +7,6 @@ class CustomAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // create widget with title
     return Stack(
       children: [
         Row(
@@ -16,7 +15,6 @@ class CustomAppBar extends StatelessWidget {
             Text(
               title,
               style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                    color: Colors.black87,
                     fontWeight: FontWeight.w500,
                   ),
             )

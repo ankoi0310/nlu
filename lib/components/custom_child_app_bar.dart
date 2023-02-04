@@ -4,10 +4,10 @@ AppBar buildAppBar({required BuildContext context, required String title}) {
   return AppBar(
     title: Text(
       title,
-      style: const TextStyle(
-        color: Colors.black,
+      style: TextStyle(
+        color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
         fontWeight: FontWeight.w600,
-        fontSize: 18,
+        fontSize: 24,
       ),
     ),
     leading: IconButton(

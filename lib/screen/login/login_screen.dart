@@ -178,12 +178,12 @@ class _LoginScreen extends State<LoginScreen> {
                           SizedBox(height: getProportionateScreenHeight(10)),
                           const Text(
                             "Mã số sinh viên",
-                            style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           buildUsernameFormField(),
                           const Text(
                             "Mật khẩu",
-                            style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           buildPasswordFormField(),
                           Row(
@@ -203,7 +203,6 @@ class _LoginScreen extends State<LoginScreen> {
                               const Text(
                                 "Ghi nhớ đăng nhập",
                                 style: TextStyle(
-                                  color: Colors.black,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
